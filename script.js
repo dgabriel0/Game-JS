@@ -32,7 +32,6 @@ const config = {
     type: Phaser.AUTO,
     width: 720,
     height: 1080,
-    backgroundColor: '#f9f9f9',
     autoCenter: Phaser.Scale.CENTER_BOTH,
     physics: {
         default: 'arcade',
