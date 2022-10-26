@@ -10,21 +10,32 @@ var player2;
 
 
 function create() {
-    
-    
-    
-    
- 
     this.add.image(config.width / 2, config.height / 2, 'fundo');
    
-    player = this.physics.add.image(config.width / 2, config.height / 2, 'player').setScale(0.25, 0.25);
+    this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
+    this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+    this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
+    this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+
+
+
+
+
+    //Player 1
+    player = this.physics.add.image(config.width / 2, config.height / 2, 'player').setScale(0.15, 0.15);
    
     player.setCollideWorldBounds(true);
-    
     player.setDrag(100);
     player.setMaxVelocity(200);
     player.rotation = 4.71239
-   
+
+
+     //Player2
+    this.player2 = this.physics.add.image(config.width / 2, config.height / 2, 'player').setScale(0.15, 0.15);
+    this.player2.setCollideWorldBounds(true);
+    this.player2.setMaxVelocity(200);
+    this.player2.rotation = 4.71239
+    
 }
 
 function update() {
@@ -33,7 +44,7 @@ function update() {
     
     if (cursors.up.isDown)
     {
-        this.physics.velocityFromRotation(player.rotation,200, player.body.acceleration);
+        this.physics.velocityFromRotation(player.rotation,1000, player.body.acceleration);
     }
     else
     {
@@ -52,7 +63,14 @@ function update() {
     {
         player.setAngularVelocity(0);
     }
+    
+    if (( this.a.isDown) || ( this.d.isDown)) this.player2.setAngularVelocity( this.a.isDown ? -300 : 300);
+    else this.player2.setAngularVelocity(0);
+    if (( this.w.isDown) ) this.physics.velocityFromRotation( this.player2.rotation, 1000, this.player2.body.acceleration);
+    else this.player2.setAcceleration(0);
 
+    
+   
     
    
 }
