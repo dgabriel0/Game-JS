@@ -6,12 +6,13 @@ export default class PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: 'PlayScene', active: true });
         this.lastFired = 0;
-        this.asteroidElapsedTime = 1000;
+        
+        this.asteroidElapsedTime = 2000 ;
         this.gameOver = false;
         this.score =false;
         this.score1 =0;
         this.scoreString ='Score = ';
-        this.pause;
+        this.menu = true;
        
        
     }
@@ -22,6 +23,7 @@ export default class PlayScene extends Phaser.Scene {
         this.load.image('ship', './img/ship.png');
         this.load.image('asteroid-1', './img/asteroid-1.png');
         this.load.image('shoot', './img/shoot.png');
+        this.load.image('logo', './img/BANNER.png');
         this.load.audio('theme','music/theme.mp3');
     }
 
@@ -30,9 +32,17 @@ export default class PlayScene extends Phaser.Scene {
         var music = this.sound.add('theme');
         music.loop =true;
         music.play();
+       
+        
+        
         
         
         this.add.image(400, 300, 'background');
+        
+        
+        
+        
+                   
         
 
         this.ship = this.physics.add.image(400, 300, 'ship').setScale(0.07, 0.07);
@@ -55,9 +65,15 @@ export default class PlayScene extends Phaser.Scene {
         this.asteroidsGroup = this.physics.add.group();
 
         this.asteroidsArray = [];
-
+if(this.menu == false){
         this.asteroidsTimedEvent = this.time.addEvent({
-            delay: this.asteroidElapsedTime,
+            delay: this.asteroidElapsedTime ,
+            callback: this.addAsteroid,
+            callbackScope: this,
+            loop: true
+        });
+        this.asteroidsTimedEvent = this.time.addEvent({
+            delay: this.asteroidElapsedTime - 1000,
             callback: this.addAsteroid,
             callbackScope: this,
             loop: true
@@ -67,13 +83,7 @@ export default class PlayScene extends Phaser.Scene {
             callback: this.addAsteroid,
             callbackScope: this,
             loop: true
-        });
-        this.asteroidsTimedEvent = this.time.addEvent({
-            delay: this.asteroidElapsedTime,
-            callback: this.addAsteroid,
-            callbackScope: this,
-            loop: true
-        });
+        });}
         this.physics.add.overlap(this.ship, this.asteroidsGroup, this.hitShip, null, this);
         this.physics.add.collider(this.shootsGroup, this.asteroidsGroup, this.hitShoot, null, this);
         this.text = this.add.text(10, 10,  this.scoreString , { fontFamily: 'Arial', fontSize: 24, color: '#00ff00' });
@@ -81,7 +91,11 @@ export default class PlayScene extends Phaser.Scene {
         this.input.on('pointerdown', function (pointer) {
                 this.score1=0;
                 
-           this.scene.restart();
+           this.scene.restart('PlayScene');
+           this.sound.stopAll();
+           
+           
+          
     
         }, this);
       
@@ -89,11 +103,27 @@ export default class PlayScene extends Phaser.Scene {
     
     
     update(time, delta) {
+        
        if(this.score){
         this.score =false;
         this.score1 +=10;
         this.text.destroy();
         this.text = this.add.text(10, 10,  this.scoreString+ this.score1 , { fontFamily: 'Arial', fontSize: 24, color: '#00ff00' });;
+       }
+       if(this.menu){
+        this.logo = this.physics.add.image(400, 50, 'logo');
+        
+        this.physics.pause();
+        this.text = this.add.text(190, 225,  'SPACE para dar start!' , { fontFamily: 'Arial', fontSize: 40, color: '#00ff00' });
+        
+        if(this.cursors.space.isDown){
+            this.menu =false;
+            this.logo.setVisible(false)
+            this.scene.restart();
+           
+        }
+        
+            
        }
         if (this.gameOver) {
             this.gameOver = false;
@@ -146,18 +176,22 @@ export default class PlayScene extends Phaser.Scene {
         }
        
     }
+    
 
     addAsteroid() {
        
         let asteroid = new Asteroid(this, 200, 300, 'asteroid-1', 0);
         this.asteroidsGroup.add(asteroid, true);
         this.asteroidsArray.push(asteroid);
+        let rdm = Math.floor(Math.random() * 300);
+        asteroid.speed = Phaser.Math.GetSpeed(rdm, 1);
         
     }
 
     hitShip(ship, asteroid) {
         this.physics.pause();
         this.asteroidsTimedEvent.paused = true;
+        
         
         this.ship.setTint(0x040404);
         this.ship.body.allowRotation = false;
