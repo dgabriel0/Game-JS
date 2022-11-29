@@ -88,16 +88,7 @@ if(this.menu == false){
         this.physics.add.collider(this.shootsGroup, this.asteroidsGroup, this.hitShoot, null, this);
         this.text = this.add.text(10, 10,  this.scoreString , { fontFamily: 'Arial', fontSize: 24, color: '#00ff00' });
         
-        this.input.on('pointerdown', function (pointer) {
-                this.score1=0;
-                
-           this.scene.restart('PlayScene');
-           this.sound.stopAll();
-           
-           
-          
-    
-        }, this);
+       
       
     }
     
@@ -111,7 +102,7 @@ if(this.menu == false){
         this.text = this.add.text(10, 10,  this.scoreString+ this.score1 , { fontFamily: 'Arial', fontSize: 24, color: '#00ff00' });;
        }
        if(this.menu){
-        this.logo = this.physics.add.image(400, 50, 'logo');
+        this.logo = this.physics.add.image(455,170, 'logo');
         
         this.physics.pause();
         this.text = this.add.text(190, 225,  'SPACE para dar start!' , { fontFamily: 'Arial', fontSize: 40, color: '#00ff00' });
@@ -130,7 +121,16 @@ if(this.menu == false){
             this.gameWait =true;
             this.physics.pause;
             this.text = this.add.text(10, 300,  'Você Morreu, click para dar restart!' , { fontFamily: 'Arial', fontSize: 40, color: '#00ff00' });
-            
+            this.input.on('pointerdown', function (pointer) {
+                this.score1=0;
+                
+           this.scene.restart('PlayScene');
+           this.sound.stopAll();
+           
+           
+          
+    
+        }, this);
             
             
             
